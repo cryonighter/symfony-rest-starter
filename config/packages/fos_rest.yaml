@@ -1,0 +1,45 @@
+# Read the documentation: https://symfony.com/doc/master/bundles/FOSRestBundle/index.html
+fos_rest:
+    param_fetcher_listener:
+        enabled: true
+#    allowed_methods_listener: true
+#    routing_loader: true
+    body_listener: true
+    serializer:
+        serialize_null: true
+    view:
+        # Требует для работы SensioFrameworkExtraBundle и TwigBundle
+#        view_response_listener:
+#            enabled: true
+#            force: true
+        # Регистрирует форматы и привязывает их к mime-типу
+        mime_types:
+            enabled: true
+            formats:
+                yaml: 'application/x-yaml'
+        # Список поддерживаемых форматов для сериализации данных
+        formats:
+            json: true
+            yaml: true
+            xml: true
+        # Список поддерживаемых форматов для шаблонизации данных
+        templating_formats:
+            html: false
+        force_redirects:
+            html: false
+        default_engine: twig
+        failed_validation: HTTP_BAD_REQUEST
+        empty_content: HTTP_NO_CONTENT
+    format_listener:
+        enabled: true
+        rules:
+            - { path: ^/+, prefer_extension: true, fallback_format: json, priorities: [json, yaml, xml, html] }
+#    service:
+#        view_handler: app.view_handler
+#    exception:
+#        enabled: true
+#        exception_controller: app.exception_controller:showAction
+#        codes:
+#            App\Exception\MyException: 403
+#        messages:
+#            App\Exception\MyException: Forbidden area.
