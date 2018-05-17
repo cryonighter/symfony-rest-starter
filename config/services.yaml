@@ -1,6 +1,7 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
+    locale: 'en'
 
 services:
     # default configuration for services in *this* file
@@ -23,5 +24,19 @@ services:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
+    # Обработчик сериализуемых форматов данных
+    app.serialize_view_handler:
+        class: App\ViewHandler\SerializeViewHandler
+
+    # Обработчик представлений всех форматов данных, делегирующий обработку специализированному сервису
+    app.view_handler:
+        parent: fos_rest.view_handler.default
+        calls:
+            - ["registerHandler", ["json", ["@app.serialize_view_handler", "createResponse"]]]
+            - ["registerHandler", ["xml", ["@app.serialize_view_handler", "createResponse"]]]
+            - ["registerHandler", ["yml", ["@app.serialize_view_handler", "createResponse"]]]
+        # При использовании делективы "parent" не возможно использовать дефолтные
+        # настройки autoconfigure, autowire и public, поэтому нужно указать их явно
+        autoconfigure: false
+        autowire: true
+        public: false

@@ -16,11 +16,12 @@ fos_rest:
         mime_types:
             enabled: true
             formats:
-                yaml: 'application/x-yaml'
+                # В jms-сериалайзере этот формат называется именно "yml", поэтому назвать его "yaml" не получится
+                yml: 'application/x-yaml'
         # Список поддерживаемых форматов для сериализации данных
         formats:
             json: true
-            yaml: true
+            yml: true
             xml: true
         # Список поддерживаемых форматов для шаблонизации данных
         templating_formats:
@@ -29,17 +30,15 @@ fos_rest:
             html: false
         default_engine: twig
         failed_validation: HTTP_BAD_REQUEST
-        empty_content: HTTP_NO_CONTENT
+
     format_listener:
         enabled: true
         rules:
-            - { path: ^/+, prefer_extension: true, fallback_format: json, priorities: [json, yaml, xml, html] }
-#    service:
-#        view_handler: app.view_handler
-#    exception:
-#        enabled: true
-#        exception_controller: app.exception_controller:showAction
-#        codes:
-#            App\Exception\MyException: 403
-#        messages:
-#            App\Exception\MyException: Forbidden area.
+            - { path: ^/+, prefer_extension: true, fallback_format: json, priorities: [json, yml, xml, html] }
+
+    service:
+        view_handler: app.view_handler
+
+    exception:
+        enabled: true
+        exception_controller: App\Controller\ExceptionController::showAction
