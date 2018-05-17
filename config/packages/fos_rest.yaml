@@ -1,24 +1,62 @@
-# Read the documentation: https://symfony.com/doc/master/bundles/FOSRestBundle/index.html
+# Ссылка на документацию: https://symfony.com/doc/master/bundles/FOSRestBundle/index.html
 fos_rest:
-    param_fetcher_listener:
+    # Добавляет в http-заголовки ответа заголовлк Allow, перечисляя
+    # в нем все разрешенные для данного роута http-методы (GET, POST)
+    allowed_methods_listener: true
+
+    # https://symfony.com/doc/master/bundles/FOSRestBundle/3-listener-support.html#security-exception-listener
+    access_denied_listener: false
+
+    # Определяет значение http-заголовка WWW-Authenticate, если требуется http-авторизация
+    unauthorized_challenge: null
+
+    # https://symfony.com/doc/master/bundles/FOSRestBundle/param_fetcher_listener.html
+    param_fetcher_listener: true
+
+    # Десериализует данные http-запроса на основаниии заголовка Content-Type
+    #
+    # https://symfony.com/doc/master/bundles/FOSRestBundle/body_listener.html
+    # Зависит от symfony/serializer-pack, если нужен XML и друние форматы
+    body_listener:
         enabled: true
-#    allowed_methods_listener: true
-#    routing_loader: true
-    body_listener: true
+        decoders:
+            json: fos_rest.decoder.json
+            xml: fos_rest.decoder.xml
+
+        # Бросает исключение (415 Unsupported Media Type), если нет
+        # декодеровщика для типа указанного в http-заголовке Content-Type
+        throw_exception_on_unsupported_content_type: true
+
+        # Нормализоторы позваляют преобразовать получившийся в результате декодирования массив массив
+        # Напримар, с помощью сервиса fos_rest.normalizer.camel_keys можно перевести ключи массива в camelKeys
+        array_normalizer:
+            service: null
+            # Нормализация данных в формате application/x-www-form-urlencoded
+            forms: true
+
+    # Позводяет использовать Param Converter для преобразования параметров запроса в объекты
+    # https://symfony.com/doc/master/bundles/FOSRestBundle/request_body_converter_listener.html
+    body_converter: false
+
     serializer:
         serialize_null: true
+
     view:
-        # Требует для работы SensioFrameworkExtraBundle и TwigBundle
-#        view_response_listener:
-#            enabled: true
-#            force: true
+        # Позволяет вернуть из экшна контроллера данные, которые
+        # потом будут обработаны сервисом fos_rest.view_handler
+        #
+        # https://symfony.com/doc/master/bundles/FOSRestBundle/view_response_listener.html
+        # Зависит от SensioFrameworkExtraBundle и, возможно, TwigBundle (TODO: насчет твига надо проверить)
+        view_response_listener:
+            enabled: true
+            force: true
         # Регистрирует форматы и привязывает их к mime-типу
         mime_types:
             enabled: true
             formats:
                 # В jms-сериалайзере этот формат называется именно "yml", поэтому назвать его "yaml" не получится
                 yml: 'application/x-yaml'
-        # Список поддерживаемых форматов для сериализации данных
+        # Список форматов (TODO: выяснить, на что это влияет. На accept вроде нет, на content-type тоже)
         formats:
             json: true
             yml: true
@@ -29,16 +67,24 @@ fos_rest:
         force_redirects:
             html: false
         default_engine: twig
+        serialize_null: true
+        empty_content: HTTP_NO_CONTENT
         failed_validation: HTTP_BAD_REQUEST
 
+    # Позволяет пользователю запросить нужный формат данных, используя http-заголовок Accept
+    # https://symfony.com/doc/master/bundles/FOSRestBundle/format_listener.html
     format_listener:
         enabled: true
         rules:
-            - { path: ^/+, prefer_extension: true, fallback_format: json, priorities: [json, yml, xml, html] }
+            - { path: '^/+', prefer_extension: true, fallback_format: 'json', priorities: ['json', 'yml', 'xml', 'html'] }
 
+    # Определяет сервисы бандла
     service:
         view_handler: app.view_handler
 
+    # https://symfony.com/doc/master/bundles/FOSRestBundle/4-exception-controller-support.html
     exception:
         enabled: true
         exception_controller: App\Controller\ExceptionController::showAction
+
+    # https://symfony.com/doc/master/bundles/FOSRestBundle/versioning.html
