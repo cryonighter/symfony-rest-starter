@@ -40,3 +40,9 @@ services:
         autoconfigure: false
         autowire: true
         public: false
+
+    # В FOSRestBundle версии 2.3.1 есть баг, из-за которого он не может обратиться к сервису по имени
+    # Решается возвратом к версии 2.3.0 или установкой такого вот алиаса
+    # https://github.com/FriendsOfSymfony/FOSRestBundle/issues/1768
+    sensio_framework_extra.view.listener:
+        alias: Sensio\Bundle\FrameworkExtraBundle\EventListener\TemplateListener
