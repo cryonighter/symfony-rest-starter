@@ -3,6 +3,9 @@
 parameters:
     locale: 'en'
 
+imports:
+- { resource: view_handlers.yaml }
+
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -23,23 +26,6 @@ services:
     App\Controller\:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
-
-    # Обработчик сериализуемых форматов данных
-    app.serialize_view_handler:
-        class: App\ViewHandler\SerializeViewHandler
-
-    # Обработчик представлений всех форматов данных, делегирующий обработку специализированному сервису
-    app.view_handler:
-        parent: fos_rest.view_handler.default
-        calls:
-            - ["registerHandler", ["json", ["@app.serialize_view_handler", "createResponse"]]]
-            - ["registerHandler", ["xml", ["@app.serialize_view_handler", "createResponse"]]]
-            - ["registerHandler", ["yml", ["@app.serialize_view_handler", "createResponse"]]]
-        # При использовании делективы "parent" не возможно использовать дефолтные
-        # настройки autoconfigure, autowire и public, поэтому нужно указать их явно
-        autoconfigure: false
-        autowire: true
-        public: false
 
     # В FOSRestBundle версии 2.3.1 есть баг, из-за которого он не может обратиться к сервису по имени
     # Решается возвратом к версии 2.3.0 или установкой такого вот алиаса

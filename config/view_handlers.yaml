@@ -1,0 +1,12 @@
+services:
+    # Обработчик сериализуемых форматов данных
+    app.serialize_view_handler:
+        class: App\ViewHandler\SerializeViewHandler
+
+    # Обработчик представлений всех форматов данных, делегирующий обработку специализированному сервису
+    app.view_handler:
+        parent: fos_rest.view_handler.default
+        calls:
+            - ['registerHandler', ['json', ['@app.serialize_view_handler', 'createResponse']]]
+            - ['registerHandler', ['xml', ['@app.serialize_view_handler', 'createResponse']]]
+            - ['registerHandler', ['yml', ['@app.serialize_view_handler', 'createResponse']]]
