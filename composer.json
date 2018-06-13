@@ -5,7 +5,7 @@
     "prefer-stable": true,
     "type": "project",
     "license": "proprietary",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "authors": [
         {
             "name": "Andrey Reshetchenko",
@@ -16,22 +16,22 @@
         "php": "^7.1.3",
         "ext-iconv": "*",
         "friendsofsymfony/rest-bundle": "^2.3",
-        "jms/serializer-bundle": "^2.3",
+        "jms/serializer-bundle": "^2.4",
         "sensio/framework-extra-bundle": "^5.1",
         "symfony/apache-pack": "^1.0",
-        "symfony/console": "^4.0",
+        "symfony/console": "^4.1",
         "symfony/flex": "^1.0",
-        "symfony/framework-bundle": "^4.0",
+        "symfony/framework-bundle": "^4.1",
         "symfony/lts": "^4@dev",
         "symfony/serializer-pack": "^1.0",
-        "symfony/translation": "^4.0",
-        "symfony/validator": "^4.0",
-        "symfony/yaml": "^4.0"
+        "symfony/translation": "^4.1",
+        "symfony/validator": "^4.1",
+        "symfony/yaml": "^4.1"
     },
     "require-dev": {
-        "symfony/browser-kit": "^4.0",
-        "symfony/dotenv": "^4.0",
-        "symfony/phpunit-bridge": "^4.0"
+        "symfony/browser-kit": "^4.1",
+        "symfony/dotenv": "^4.1",
+        "symfony/phpunit-bridge": "^4.1"
     },
     "config": {
         "preferred-install": {
