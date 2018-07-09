@@ -1,6 +1,6 @@
 <?php
 
-namespace App\ViewHandler;
+namespace App\Http\ViewHandler;
 
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\View\ViewHandler;

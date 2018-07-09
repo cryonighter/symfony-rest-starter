@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Controller;
+namespace App\Http\Controller;
 
-use App\Exception\HttpException\ValidationHttpException;
+use App\Http\Exception\ValidationHttpException;
 use Exception;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\View\View;

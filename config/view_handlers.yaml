@@ -1,7 +1,7 @@
 services:
     # Обработчик сериализуемых форматов данных
     app.serialize_view_handler:
-        class: App\ViewHandler\SerializeViewHandler
+        class: App\Http\ViewHandler\SerializeViewHandler
 
     # Обработчик представлений всех форматов данных, делегирующий обработку специализированному сервису
     app.view_handler:

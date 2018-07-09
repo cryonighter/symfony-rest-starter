@@ -85,6 +85,6 @@ fos_rest:
     # https://symfony.com/doc/master/bundles/FOSRestBundle/4-exception-controller-support.html
     exception:
         enabled: true
-        exception_controller: App\Controller\ExceptionController::showAction
+        exception_controller: App\Http\Controller\ExceptionController::showAction
 
     # https://symfony.com/doc/master/bundles/FOSRestBundle/versioning.html
