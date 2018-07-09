@@ -14,6 +14,9 @@ services:
         public: false       # Allows optimizing the container by removing unused services; this also means
                             # fetching services directly from the container via $container->get() won't work.
                             # The best practice is to be explicit about your dependencies anyway.
+        bind:
+            $environment: '%kernel.environment%'
+            $projectDir: '%kernel.project_dir%'
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
@@ -30,5 +33,7 @@ services:
     # В FOSRestBundle версии 2.3.1 есть баг, из-за которого он не может обратиться к сервису по имени
     # Решается возвратом к версии 2.3.0 или установкой такого вот алиаса
     # https://github.com/FriendsOfSymfony/FOSRestBundle/issues/1768
-    sensio_framework_extra.view.listener:
-        alias: Sensio\Bundle\FrameworkExtraBundle\EventListener\TemplateListener
+    Sensio\Bundle\FrameworkExtraBundle\EventListener\TemplateListener: '@sensio_framework_extra.view.listener'
+
+    # JMS Serializer Alias
+    JMS\Serializer\Serializer: '@jms_serializer'

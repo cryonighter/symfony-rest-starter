@@ -5,7 +5,7 @@
     "prefer-stable": true,
     "type": "project",
     "license": "proprietary",
-    "version": "1.0.1",
+    "version": "1.1.0",
     "authors": [
         {
             "name": "Andrey Reshetchenko",
