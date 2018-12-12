@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Controller;
+namespace App\EventListener;
 
-use App\DTO\Error\CommonError;
-use App\DTO\Error\FieldValidationError;
+use App\Data\Error\CommonError;
+use App\Data\Error\FieldValidationError;
 use App\Exception\ValidationHttpException;
 use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\View\View;
-use Symfony\Component\HttpFoundation\Request;
+use FOS\RestBundle\View\ViewHandlerInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
-use Symfony\Component\HttpKernel\Log\DebugLoggerInterface;
 use Throwable;
 
-class ExceptionController
+class ExceptionListener
 {
     /**
      * General information about the error
@@ -31,32 +31,43 @@ class ExceptionController
     private const GROUP_VALIDATION = 'validation';
 
     /**
+     * @var ViewHandlerInterface
+     */
+    private $viewHandler;
+
+    /**
      * @var string
      */
     private $environment;
 
     /**
-     * @param string $environment
+     * @param ViewHandlerInterface $viewHandler
+     * @param string               $environment
      */
-    public function __construct(string $environment)
+    public function __construct(ViewHandlerInterface $viewHandler, string $environment)
     {
+        $this->viewHandler = $viewHandler;
         $this->environment = $environment;
     }
 
     /**
-     * @param Request                     $request
-     * @param Throwable                   $exception
-     * @param DebugLoggerInterface | null $logger
+     * @param GetResponseForExceptionEvent $event
      *
-     * @return View
+     * @return void
      */
-    public function showAction(Request $request, Throwable $exception, ?DebugLoggerInterface $logger = null): View
+    public function onKernelException(GetResponseForExceptionEvent $event): void
     {
+        $exception = $event->getException();
+
         if ($exception instanceof HttpExceptionInterface) {
-            return $this->createHttpExceptionView($exception);
+            $view = $this->createHttpExceptionView($exception);
+        } else {
+            $view = $this->createInternalExceptionView($exception);
         }
 
-        return $this->createInternalExceptionView($exception);
+        $event->setResponse(
+            $this->viewHandler->handle($view, $event->getRequest())
+        );
     }
 
     /**
@@ -67,6 +78,7 @@ class ExceptionController
     private function createHttpExceptionView(Throwable $exception): View
     {
         $commonError = CommonError::createFromException('00', $exception->getMessage(), $exception);
+        $context = (new Context())->addGroup(self::GROUP_COMMON);
 
         if ($exception instanceof ValidationHttpException) {
             $validationErrors = $exception->getValidationErrors();
@@ -79,10 +91,12 @@ class ExceptionController
                     );
                 }
             }
+
+            $context->addGroup(self::GROUP_VALIDATION);
         }
 
         return View::create($commonError, $exception->getStatusCode(), $exception->getHeaders())
-            ->setContext((new Context())->addGroups([self::GROUP_COMMON, self::GROUP_VALIDATION]));
+            ->setContext($context);
     }
 
     /**

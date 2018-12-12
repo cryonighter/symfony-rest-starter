@@ -1,6 +1,6 @@
 <?php
 
-namespace App\DTO\Error;
+namespace App\Data\Error;
 
 use JMS\Serializer\Annotation as Serializer;
 

@@ -5,7 +5,7 @@
     "prefer-stable": true,
     "type": "project",
     "license": "proprietary",
-    "version": "1.1.1",
+    "version": "1.2.0",
     "authors": [
         {
             "name": "Andrey Reshetchenko",
@@ -17,7 +17,7 @@
         "ext-iconv": "*",
         "friendsofsymfony/rest-bundle": "^2.3",
         "jms/serializer-bundle": "^2.4",
-        "sensio/framework-extra-bundle": "^5.1",
+        "sensio/framework-extra-bundle": "^5.2",
         "symfony/apache-pack": "^1.0",
         "symfony/console": "^4.2",
         "symfony/flex": "^1.1",

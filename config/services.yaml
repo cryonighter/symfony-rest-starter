@@ -22,13 +22,18 @@ services:
     # this creates a service per class whose id is the fully-qualified class name
     App\:
         resource: '../src/*'
-        exclude: '../src/{Entity,Migrations,Tests,Kernel.php}'
+        exclude: '../src/{Data,Entity,Exception,Migrations,Tests,Kernel.php}'
 
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
     App\Controller\:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
+
+    # global error handler
+    App\EventListener\ExceptionListener:
+    tags:
+        - { name: kernel.event_listener, event: kernel.exception }
 
     # В FOSRestBundle версии 2.3.1 есть баг, из-за которого он не может обратиться к сервису по имени
     # Решается возвратом к версии 2.3.0 или установкой такого вот алиаса
