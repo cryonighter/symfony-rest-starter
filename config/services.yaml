@@ -32,8 +32,8 @@ services:
 
     # global error handler
     App\EventListener\ExceptionListener:
-    tags:
-        - { name: kernel.event_listener, event: kernel.exception }
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception }
 
     # В FOSRestBundle версии 2.3.1 есть баг, из-за которого он не может обратиться к сервису по имени
     # Решается возвратом к версии 2.3.0 или установкой такого вот алиаса

@@ -26,6 +26,15 @@ class CommonError
     private $message;
 
     /**
+     * @Serializer\SerializedName("type")
+     * @Serializer\Groups({"internal"})
+     * @Serializer\Type("string")
+     *
+     * @var string
+     */
+    private $type;
+
+    /**
      * @Serializer\SerializedName("file")
      * @Serializer\Groups({"internal"})
      * @Serializer\Type("string")
@@ -55,7 +64,7 @@ class CommonError
     /**
      * @Serializer\SerializedName("previous")
      * @Serializer\Groups({"internal"})
-     * @Serializer\Type("App\DTO\Error\CommonError")
+     * @Serializer\Type("App\Data\Error\CommonError")
      *
      * @var CommonError | null
      */
@@ -64,7 +73,7 @@ class CommonError
     /**
      * @Serializer\SerializedName("fields")
      * @Serializer\Groups({"validation"})
-     * @Serializer\Type("array<string, App\DTO\Error\FieldValidationError>")
+     * @Serializer\Type("array<string, App\Data\Error\FieldValidationError>")
      *
      * @var string
      */
@@ -84,6 +93,7 @@ class CommonError
         return new static(
             $code,
             $message,
+            get_class($exception),
             $exception->getFile(),
             $exception->getLine(),
             $exception->getTrace(),
@@ -98,6 +108,7 @@ class CommonError
     /**
      * @param string             $code
      * @param string             $message
+     * @param string             $type
      * @param string             $file
      * @param int                $line
      * @param array              $stackTrace
@@ -107,6 +118,7 @@ class CommonError
     public function __construct(
         string $code,
         string $message,
+        string $type,
         string $file,
         int $line,
         array $stackTrace = [],
@@ -115,6 +127,7 @@ class CommonError
     ) {
         $this->code = $code;
         $this->message = $message;
+        $this->type = $type;
         $this->file = $file;
         $this->line = $line;
         $this->stackTrace = $stackTrace;
